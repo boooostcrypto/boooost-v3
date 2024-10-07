@@ -1,0 +1,150 @@
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+// import { ArrowUpIcon, ArrowDownIcon, MinusIcon } from "lucide-react"
+import Image from "next/image"
+
+// type LeaderboardEntry = {
+//   rank: number
+//   imageUrl: string
+//   username: string
+//   score: number
+//   change: "up" | "down" | "same"
+//   prize: number
+// }
+
+type Bounty = {
+  id: number
+  title: string
+  category: string
+  description: string
+  reward: {
+    amount: number
+    token: string
+  }
+  deadline: string
+  community: {
+    name: string
+    imageUrl: string
+  }
+}
+
+// const leaderboardData: LeaderboardEntry[] = [
+//   { rank: 1, imageUrl: "https://placehold.co/40x40", username: "player1", score: 1000, change: "same", prize: 10000 },
+//   { rank: 2, imageUrl: "https://placehold.co/40x40", username: "player2", score: 950, change: "up", prize: 5000 },
+//   { rank: 3, imageUrl: "https://placehold.co/40x40", username: "player3", score: 900, change: "down", prize: 3000 },
+//   { rank: 4, imageUrl: "https://placehold.co/40x40", username: "player4", score: 850, change: "up", prize: 1000 },
+//   { rank: 5, imageUrl: "https://placehold.co/40x40", username: "player5", score: 800, change: "same", prize: 500 },
+// ]
+
+const bountyData: Bounty[] = [
+  { id: 1, title: "Twitter Campaign", category: "Social Media Marketing", description: "Promote our new DeFi platform on Twitter", reward: { amount: 500, token: "USDT" }, deadline: "2023-06-30", community: { name: "Bookworms United", imageUrl: "https://placehold.co/30x30" } },
+  { id: 2, title: "Anime Review Article", category: "Content Creation", description: "Write a comprehensive review of a popular anime series", reward: { amount: 100, token: "MATIC" }, deadline: "2023-07-10", community: { name: "Anime Enthusiasts", imageUrl: "https://placehold.co/30x30" } },
+  { id: 3, title: "Bug Bounty", category: "Development", description: "Find and report critical security vulnerabilities", reward: { amount: 1000, token: "USDC" }, deadline: "2023-07-31", community: { name: "Puzzle Solvers", imageUrl: "https://placehold.co/30x30" } },
+  { id: 4, title: "Educational YouTube Video", category: "Video Content", description: "Create an informative video about blockchain technology", reward: { amount: 250, token: "ADA" }, deadline: "2023-08-15", community: { name: "Tech Educators", imageUrl: "https://placehold.co/30x30" } },
+  { id: 5, title: "Spanish Crypto Guide", category: "Translation", description: "Write a beginner's guide to cryptocurrency in Spanish", reward: { amount: 300, token: "DAI" }, deadline: "2023-08-30", community: { name: "Polyglot Pals", imageUrl: "https://placehold.co/30x30" } },
+  { id: 6, title: "Smart Contract Audit", category: "Security", description: "Perform a comprehensive audit of our smart contracts", reward: { amount: 2, token: "ETH" }, deadline: "2023-09-15", community: { name: "Code Crafters", imageUrl: "https://placehold.co/30x30" } },
+  { id: 7, title: "Expat Guide Video", category: "Educational Content", description: "Create a YouTube video guide for digital nomads", reward: { amount: 500, token: "USDT" }, deadline: "2023-09-30", community: { name: "Global Wanderers", imageUrl: "https://placehold.co/30x30" } },
+  { id: 8, title: "Anime-Inspired NFT Design", category: "Digital Art", description: "Design an anime-style NFT collection", reward: { amount: 0.5, token: "ETH" }, deadline: "2023-10-15", community: { name: "Otaku Artists", imageUrl: "https://placehold.co/30x30" } },
+  { id: 9, title: "DeFi Explainer in German", category: "Content Creation", description: "Write an article explaining DeFi concepts in German", reward: { amount: 400, token: "DAI" }, deadline: "2023-10-31", community: { name: "Crypto Educators", imageUrl: "https://placehold.co/30x30" } },
+  { id: 10, title: "Education Abroad Vlog", category: "Video Content", description: "Create a vlog series about studying in a foreign country", reward: { amount: 750, token: "USDC" }, deadline: "2023-11-15", community: { name: "Student Explorers", imageUrl: "https://placehold.co/30x30" } },
+]
+
+// const ChangeIcon = ({ change }: { change: "up" | "down" | "same" }) => {
+//   switch (change) {
+//     case "up":
+//       return <ArrowUpIcon className="w-4 h-4 text-green-500" />
+//     case "down":
+//       return <ArrowDownIcon className="w-4 h-4 text-red-500" />
+//     case "same":
+//       return <MinusIcon className="w-4 h-4 text-gray-500" />
+//   }
+// }
+
+export default function LeaderboardAndBounties() {
+  return (
+    <div className="container mx-auto py-10 space-y-10">
+      {/* <div>
+        <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
+        <div className="rounded-md border overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[60px]">Image</TableHead>
+                <TableHead className="w-[60px]">Rank</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead className="text-right">Score</TableHead>
+                <TableHead className="w-[80px] text-center">Change</TableHead>
+                <TableHead className="text-right">Prize</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {leaderboardData.map((entry) => (
+                <TableRow key={entry.rank}>
+                  <TableCell>
+                    <Image
+                      src={entry.imageUrl}
+                      alt={`${entry.username}'s avatar`}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  </TableCell>
+                  <TableCell className="font-medium">{entry.rank}</TableCell>
+                  <TableCell>{entry.username}</TableCell>
+                  <TableCell className="text-right">{entry.score}</TableCell>
+                  <TableCell className="text-center">
+                    <ChangeIcon change={entry.change} />
+                  </TableCell>
+                  <TableCell className="text-right">${entry.prize.toLocaleString()}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div> */}
+
+      <div>
+        <h2 className="text-2xl font-bold mb-4">Bounties</h2>
+        <div className="rounded-md border overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[180px]">Community</TableHead>
+                <TableHead>Title & Category</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead className="text-right">Reward</TableHead>
+                <TableHead className="text-right">Deadline</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {bountyData.map((bounty) => (
+                <TableRow key={bounty.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src={bounty.community.imageUrl}
+                        alt={`${bounty.community.name} logo`}
+                        width={30}
+                        height={30}
+                        className="rounded-full"
+                      />
+                      <span className="font-medium">{bounty.community.name}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-medium">{bounty.title}</div>
+                    <div className="text-sm text-muted-foreground">{bounty.category}</div>
+                  </TableCell>
+                  <TableCell>{bounty.description}</TableCell>
+                  <TableCell className="text-right">
+                    {bounty.reward.amount} {bounty.reward.token}
+                  </TableCell>
+                  <TableCell className="text-right">{bounty.deadline}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  )
+}
