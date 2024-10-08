@@ -12,6 +12,8 @@ if (!PRIVY_APP_ID || !PRIVY_APP_SECRET) {
 const client = new PrivyClient(PRIVY_APP_ID, PRIVY_APP_SECRET);
 const prisma = new PrismaClient()
 
+export const dynamic = 'force-dynamic';
+
 
 export async function GET(request: Request) {
   try {
