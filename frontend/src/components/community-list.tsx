@@ -93,13 +93,13 @@ export function CommunityList() {
               <TableCell>{community.members.toLocaleString()}</TableCell>
               <TableCell>${community.tokenPrice.toFixed(4)}</TableCell>
               <TableCell>
-                <Badge variant={community.change24h >= 0 ? "success" : "destructive"}>
+                <Badge variant={community.change24h >= 0 ? "default" : "destructive"}>
                   {community.change24h >= 0 ? "+" : ""}{community.change24h.toFixed(2)}%
                 </Badge>
               </TableCell>
               <TableCell>${community.marketCap.toLocaleString()}</TableCell>
               <TableCell>
-                <Badge variant={community.status === "Live" ? "success" : "warning"}>
+              <Badge variant={community.status === "Live" ? "default" : "secondary"}>
                   {community.status}
                 </Badge>
               </TableCell>
