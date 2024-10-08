@@ -8,7 +8,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useDropzone } from 'react-dropzone'
-import Link from 'next/link'
 import { toast } from '@/hooks/use-toast'
 import { getAccessToken } from '@privy-io/react-auth'
 // import { useRouter } from 'next/navigation'
@@ -129,7 +128,8 @@ export default function CreateCommunityDetail() {
         throw new Error('Failed to create community')
       }
 
-      const result = await response.json()
+      // const result = await response.json()
+      await response.json()
       toast({
         title: "Success",
         description: "Community created successfully!",
