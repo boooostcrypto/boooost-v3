@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,8 +8,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useDropzone } from 'react-dropzone'
-import Link from 'next/link'
+import { toast } from '@/hooks/use-toast'
+import { getAccessToken } from '@privy-io/react-auth'
+// import { useRouter } from 'next/navigation'
+
 export default function CreateCommunityDetail() {
+  // const router = useRouter();
+  
   const [communityName, setCommunityName] = useState('')
   const [description, setDescription] = useState('')
   const [initialSupply, setInitialSupply] = useState('')
@@ -23,6 +30,7 @@ export default function CreateCommunityDetail() {
   const [telegram, setTelegram] = useState('')
   const [discord, setDiscord] = useState('')
   const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const investmentStartDate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
@@ -50,26 +58,114 @@ export default function CreateCommunityDetail() {
     multiple: false
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   console.log({
+  //     communityName,
+  //     description,
+  //     initialSupply,
+  //     initialPrice,
+  //     maxSupply,
+  //     reserveRatio,
+  //     coverImage,
+  //     tokenLogo,
+  //     tokenName,
+  //     tokenSymbol,
+  //     website,
+  //     twitter,
+  //     telegram,
+  //     discord,
+  //     investmentStartDate,
+  //     agreeToTerms
+  //   })
+  // }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({
-      communityName,
-      description,
-      initialSupply,
-      initialPrice,
-      maxSupply,
-      reserveRatio,
-      coverImage,
-      tokenLogo,
-      tokenName,
-      tokenSymbol,
-      website,
-      twitter,
-      telegram,
-      discord,
-      investmentStartDate,
-      agreeToTerms
+    setIsSubmitting(true)
+
+    try {
+      // Upload images and get their URLs
+      const coverImageUrl = coverImage ? await uploadImage(coverImage) : null
+      const tokenLogoUrl = tokenLogo ? await uploadImage(tokenLogo) : null
+
+      const communityData = {
+        community: {
+          name: communityName,
+          description,
+          coverImage: coverImageUrl,
+          // creatorId: 1, // Assuming you have a way to get the current user's ID
+        },
+        token: {
+          name: tokenName,
+          symbol: tokenSymbol,
+          logo: tokenLogoUrl,
+          initialSupply: parseFloat(initialSupply),
+          initialPrice: parseFloat(initialPrice),
+          maxSupply: parseFloat(maxSupply),
+          reserveRatio: parseFloat(reserveRatio),
+          investmentStartDate,
+        },
+        communityLinks: {
+          website,
+          twitter,
+          telegram,
+          discord,
+        },
+      }
+
+      const accessToken = await getAccessToken();
+      const response = await fetch('/api/community', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
+        body: JSON.stringify(communityData),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to create community')
+      }
+
+      // const result = await response.json()
+      await response.json()
+      toast({
+        title: "Success",
+        description: "Community created successfully!",
+        // action: (
+        //   <ToastAction altText="Go to communities">Go to communities</ToastAction>
+        // ),
+      })
+      // router.push('/communities/create/saved')
+    } catch (error) {
+      console.error('Error creating community:', error)
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create community. Please try again.",
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // Helper function to upload images
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
     })
+
+    if (!response.ok) {
+      throw new Error('Failed to upload image')
+    }
+
+    const { url } = await response.json()
+    return url
   }
 
   return (
@@ -269,15 +365,14 @@ export default function CreateCommunityDetail() {
             I agree to the <a href="#" className="text-purple-600 hover:underline">Terms of Service</a>
           </Label>
         </div>
-        <Link href="/communities/create/saved">
+       
         <Button 
           type="submit" 
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300 ease-in-out transform hover:scale-105"
           disabled={!agreeToTerms}
         >
-          Save 
+          {isSubmitting ? 'Creating Community...' : 'Create Community'}
         </Button>
-        </Link>
       </form>
     </div>
   )
